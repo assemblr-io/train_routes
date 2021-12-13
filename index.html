@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap"
+      rel="stylesheet"
+    />
+    
+  </head>
+  <body>
+    <div id="container">
+      <div class="bg-wrapper">
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
+
+      <div class="content-wrapper">
+        <div class="content">
+          <header><h1><span style="color:#2B62D5">M</span>ELBOURNE JOURNEY PLANNER</h1></header>
+          <div id="map"></div>
+          <aside class="station-list">
+            <h3>ONBOARDING</h3>
+            <div class="autocomplete">
+              <input
+                id="originInput"
+                type="text"
+                name="originStation"
+                placeholder="Starting"
+                class="text-input"
+              />
+            </div>
+            <h3>DESTINATION</h3>
+            <div class="autocomplete">
+              <input
+                id="destInput"
+                name="destStation"
+                type="text"
+                placeholder="Ending"
+                class="text-input"
+              />
+            </div>
+            <div class='button-wrapper'>
+              <button id='reset' class="bubbly-button">RESET</button>
+            </div>
+            <div id="stationList" ></div>
+          </aside>
+        </div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
+
+      <div class="bg-wrapper">
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
+    </div>
+   
+    <script src="./javascript/maps.js"></script>
+    <!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk&libraries=places&callback=initMap"></script> -->
+    <script src="./javascript/melb_metro_ptv_mta.js"></script>
+    
+    </script>
+  </body>
+</html>
