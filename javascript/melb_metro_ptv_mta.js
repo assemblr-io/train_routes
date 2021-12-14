@@ -14,6 +14,7 @@ class route{
         this.end_line_plus = '',
         this.route_connector = " --> ",
         this.route = '',
+        this.wayPts=[],
         this.switch_lines = ''
         this.interconnect = 'Richmond'
     }
@@ -31,27 +32,31 @@ class line {
 //build network
 let network = []
 network.push(new line ('alamein',[
-  {name:'Flinders Street', plus_code:'5XJ8+MR Melbourne, Victoria'},
-  {name:'Richmond', plus_code:'5XGQ+FM Richmond, Victoria'},
-  {name:'East Richmond', plus_code:'5XFW+FW Richmond, Victoria'},
-  {name:'Burnley', plus_code:'52C5+W3 Burnley, Victoria'},
-  {name:'Hawthorn', plus_code:'52HF+FR Hawthorn, Victoria'},
-  {name:'Glenferrie', plus_code:'52HP+9H Hawthorn, Victoria'}
+  {name:'Flinders Street', latLng:{lat:-37.8181354740904, lng:144.96706179815612}},
+  {name:'Richmond', latLng:{lat:-37.82360061170248, lng:144.98919822699185}},
+  {name:'East Richmond', latLng:{lat:-37.826342140223495, lng:144.99726690060592}},
+  {name:'Burnley', latLng:{lat:-37.82765411232484, lng:145.007733766259}},
+  {name:'Hawthorn', latLng:{lat:-37.82128493600619, lng:145.02457456809626}},
+  {name:'Glenferrie', latLng:{lat:-37.82146501757419, lng:145.03645895581136}}
   ]));
 network.push(new line ('glen_waverly',[
-  {name:'Flagstaff', plus_code:'5XQ4+8C West Melbourne, Victoria'},
-  {name:'Melbourne Central', plus_code:'5XQ7+R5 Melbourne, Victoria'},
-  {name:'Parliament', plus_code:'5XQF+V4 East Melbourne, Victoria'},
-  {name:'Richmond', plus_code:'5XGQ+FM Richmond, Victoria'},
-  {name:'Kooyong', plus_code:'526M+35 Kooyong, Victoria'},
-  {name:'Tooronga', plus_code:'522R+6J Malvern, Victoria'}
+  {name:'Flagstaff', latLng:{lat:-37.8120434751738, lng:144.9560195828145}},
+  {name:'Melbourne Central', latLng:{lat:-37.81040631759949, lng:144.96291170493143}},
+  {name:'Parliament', latLng:{lat:-37.81028705096947, lng:144.97286077791554}},
+  {name:'Richmond', latLng:{lat:-37.82360061170248, lng:144.98919822699185}},
+  {name:'Kooyong', latLng:{lat:-37.83986543517936, lng:145.03294822699218}},
+  {name:'Tooronga', latLng:{lat:-37.84940041575873, lng:145.0415879791411}}
 ]));
 network.push(new line ('sandringham',[
-  {name:'Southern Cross', plus_code:'5XJ2+JX Docklands, Victoria'},
-  {name:'Richmond', plus_code:'5XGQ+FM Richmond, Victoria'},
-  {name:'South Yarra', plus_code:'5X6R+CV South Yarra, Victoria'},
-  {name:'Prahran', plus_code:'4XXQ+CP Windsor, Victoria'},
-  {name:'Windsor', plus_code:'4XVR+HP Windsor, Victoria'}
+  {name:'Southern Cross', latLng:{lat:-37.81834001342736, lng:144.95248577791554}},
+  {name:'Richmond', latLng:{lat:-37.82360061170248, lng:144.98919822699185}},
+  {name:'South Yarra', latLng: {lat:-37.83891067907375, lng:144.99218031541324}},
+  {name:'Prahran', latLng:{lat:-37.85138538762354, lng:144.98926588168288}},
+  {name:'Windsor', latLng:{lat:-37.85600106493203, lng:144.9917561717712}},
+  {name:'Balaclava', latLng:{lat:-37.8693704134397, lng:144.99364491080965}},
+  {name:'Ripponlea', latLng:{lat:-37.87556134001444, lng:144.99513621893163}},
+  {name:'Elsternwick', latLng:{lat:-37.88403402141081, lng:145.0006236075728}}
+
 ]));
 
 //pass in station objects and this updates the route object.  It also passes back true/false if it had issues finding the terminal station names
@@ -70,7 +75,7 @@ function find_stations(start_stn_name, dest_stn_name){
       (i = station.name.indexOf(start_stn_name))!= -1 && start_stn_name !=''? 
             (trip.start_line_i = line_index, 
             trip.start_stn_i = station_index,
-            trip.start_line_plus = station.plus_code,
+            trip.start_line_plus = station.latLng,
             trip.start_line_inter_i = line.stations.findIndex(function(station){
               return station.name == trip.interconnect
             }),
@@ -87,7 +92,7 @@ function find_stations(start_stn_name, dest_stn_name){
         (i = station.name.indexOf(dest_stn_name))!= -1 && dest_stn_name !=''? 
               (trip.end_line_i = line_index, 
               trip.end_stn_i = station_index,
-              trip.end_line_plus = station.plus_code,
+              trip.end_line_plus = station.latLng,
               trip.end_line_inter_i = line.stations.findIndex(function(station){
                 return station.name == trip.interconnect
               }),
@@ -105,12 +110,20 @@ function find_stations(start_stn_name, dest_stn_name){
 //fetch the names of the station and handle reverse order
 function fetch_station_names(line, start_station, end_station){
   let station_arr = [];
-  line.stations.forEach(station=> station_arr.push(station.name));
+  
+  line.stations.forEach(station=> {
+    station_arr.push(station.name);
+    trip.wayPts.push({location:station.latLng, stopover:false});
+  });
+  //handle station locations same as names - this can be cleaned up! its an after thought - DT suggested showing stations between so implementing as good idea :)
+  trip.wayPts = start_station > end_station ? (trip.wayPts.slice(end_station, start_station+1)).reverse() : (trip.wayPts.slice(start_station,end_station+1));
   return start_station > end_station ? (station_arr.slice(end_station, start_station+1)).reverse() : (station_arr.slice(start_station,end_station+1))
 }
 
 //build the route as an array so it can easily be used for DOM manipulation
 function build_route(){
+  //empty waypoints value
+  trip.wayPts = [];
   console.log('build_route');
     //single line trip
     if (!trip.switch_lines){
@@ -145,10 +158,27 @@ let line_1_string;
 
 function printToDom(printRoute){
     document.getElementById('stationList').innerHTML = '';
+    //this is verbose code for testing, can clean up later.  ALSO connect the tag divs using an SVG line - currently using element borders in CSS
     if(printRoute){
-        trip.route.forEach(station => document.getElementById('stationList').innerHTML += `<div class='station-name'>${station}</div>`)
+        trip.route.forEach((station, i) => {
+          if(i==0 ){
+            document.getElementById('stationList').innerHTML += `<div class='station-name'><div class='tag'>A</div>${station}</div>`
+          } else if (i==trip.route.length-1) {
+            document.getElementById('stationList').innerHTML += `<div class='station-name'><div class='tag'>B</div>${station}</div>`
+          }
+          else {
+            document.getElementById('stationList').innerHTML += `<div class='station-name'><div></div>${station}</div>`
+          }
+        })
     }
-    calcRoute(trip.start_line_plus, trip.end_line_plus);
+ 
+
+    //pop and shift the first and last wayPt values as these are the origin and destinations
+    trip.wayPts.pop();
+    trip.wayPts.shift();
+
+    //pass in waypts
+    calcRoute(trip.start_line_plus, trip.end_line_plus, trip.wayPts);
 }
 
 //AUTOCOMPLETE ON INPUT FORMS
