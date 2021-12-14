@@ -10,10 +10,9 @@ var directionsService;
 var map;
 
 function loadScript() {
-  var myKey = "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk";
   var script = document.createElement("script");
   script.type = "text/javascript";
-  script.src = "https://maps.googleapis.com/maps/api/js?key=" + myKey + "&callback=initialize";
+  script.src = "https://maps.googleapis.com/maps/api/js?key=" + config.MAPS_API_KEY + "&callback=initialize";
   document.body.appendChild(script);
 }
 window.onload = loadScript;
