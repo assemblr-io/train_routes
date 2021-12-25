@@ -8,10 +8,10 @@ var latLngArray = [];
 var directionDisplay;
 var directionsService;
 var map;
-
+var enviro='UAT'
 
 function loadScript() {
-  var API_KEY = "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk";
+  var API_KEY = "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk"
   var script = document.createElement("script");
   script.type = "text/javascript";
   script.src = "https://maps.googleapis.com/maps/api/js?key=" + API_KEY + "&callback=initialize";
@@ -38,6 +38,8 @@ function initialize() {
 }
 
 function calcRoute(orig, dest, wayPts) {
+  // const d = new Date()
+  // d.setDate(d.getDate() + ((7 - d.getDay()) % 7 + 1) % 7);
 
   //departure time needed to stop it using the current time to calc routes which ignore trains if they're not running!
   var request = {
@@ -47,7 +49,7 @@ function calcRoute(orig, dest, wayPts) {
       // waypoints: wayPts,
       travelMode: google.maps.DirectionsTravelMode.TRANSIT,
       transitOptions: {
-        departureTime: new Date('December 13, 2021 07:00:00'),
+        // departureTime: new Date('December 13, 2025 07:00:00'),
         modes: ['TRAIN'],
         routingPreference: 'FEWER_TRANSFERS'}
   };
