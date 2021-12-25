@@ -8,10 +8,10 @@ var latLngArray = [];
 var directionDisplay;
 var directionsService;
 var map;
-var enviro='UAT'
+
 
 function loadScript() {
-  var API_KEY = enviro== 'UAT' ? "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk" : config.MAPS_PRIVATE_API_KEY
+  var API_KEY = "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk";
   var script = document.createElement("script");
   script.type = "text/javascript";
   script.src = "https://maps.googleapis.com/maps/api/js?key=" + API_KEY + "&callback=initialize";
