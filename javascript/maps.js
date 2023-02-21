@@ -7,8 +7,8 @@ var directionsService;
 var map;
 
 function loadScript() {
-  var API_KEY = "AIzaSyBimsO-5HTfzRdKwgBin2iLWaHX5ubokuk";
-  var script = document.createElement("script");
+  const API_KEY = "AIzaSyDoLvv-SV4N-eu04xRdHzGPSctSoJKhtIA";
+  const script = document.createElement("script");
   script.type = "text/javascript";
   script.src = "https://maps.googleapis.com/maps/api/js?key=" + API_KEY + "&callback=initialize";
   document.body.appendChild(script);
